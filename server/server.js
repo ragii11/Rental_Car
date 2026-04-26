@@ -22,9 +22,9 @@ app.use(cors({
 }));
 
 // DB connection
-await connectDB().then(() => {
+connectDB().then(() => {
   seedAdmin();
-});
+}).catch(console.error);
 
 // API routes
 app.use("/api/user", userRouter);
@@ -37,7 +37,12 @@ app.get("/", (req, res) => {
   res.send("Car Rental API is running");
 });
 
-// Start server
-app.listen(port, () => {
-  console.log(`Server started on http://localhost:${port}`);
-});
+// Start server (only if not running in Vercel serverless)
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`Server started on http://localhost:${port}`);
+  });
+}
+
+// Export the app for Vercel
+export default app;
