@@ -22,7 +22,7 @@ app.use(cors({
 }));
 
 // DB connection
-connectDB().then(() => {
+await connectDB().then(() => {
   seedAdmin();
 });
 
