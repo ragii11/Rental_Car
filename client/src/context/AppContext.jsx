@@ -5,7 +5,7 @@ import { carList } from "../assets/assets";
 
 export const AppContext = createContext();
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://rental-car-server-qz0g.onrender.com";
 
 const AppContextProvider = (props) => {
   const [showLogin, setShowLogin] = useState(false);
