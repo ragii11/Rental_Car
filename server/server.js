@@ -10,14 +10,14 @@ import { seedAdmin } from "./controllers/adminController.js";
 
 // App config
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 0.0.0.0;
 
 // Middleware
 app.use(express.json());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
+    : ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174", "https://rental-car-client-1m89.onrender.com", "https://rental-car-admin.onrender.com"],
   credentials: true,
 }));
 
