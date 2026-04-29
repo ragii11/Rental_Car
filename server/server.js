@@ -10,7 +10,7 @@ import { seedAdmin } from "./controllers/adminController.js";
 
 // App config
 const app = express();
-const port = process.env.PORT || 0.0.0.0;
+const port = process.env.PORT || 10000
 
 // Middleware
 app.use(express.json());
