@@ -40,12 +40,10 @@ app.get("/", (req, res) => {
   res.send("Car Rental API is running");
 });
 
-// Start server (only if not running in Vercel serverless)
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`Server started on http://localhost:${port}`);
-  });
-}
+// Start server
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+});
 
 // Export the app for Vercel
 export default app;
