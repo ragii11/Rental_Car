@@ -77,6 +77,7 @@ const Cars = () => {
               <option value="SUV">SUV</option>
               <option value="Sports">Sports</option>
               <option value="Electric">Electric</option>
+              <option value="Hatchback">Hatchback</option>
             </select>
           </div>
 
@@ -126,9 +127,9 @@ const Cars = () => {
               }
             >
               <option value="">Any Price</option>
-              <option value="low">Under $150/day</option>
-              <option value="mid">$150 - $300/day</option>
-              <option value="high">Over $300/day</option>
+              <option value="low">Under ₹150/day</option>
+              <option value="mid">₹150 - ₹300/day</option>
+              <option value="high">Over ₹300/day</option>
             </select>
           </div>
         </aside>

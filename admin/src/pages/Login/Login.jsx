@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import logo from "../../assets/logo.jpg";
 import "./Login.css";
 
 const Login = ({ setToken, backendUrl }) => {
@@ -32,12 +33,7 @@ const Login = ({ setToken, backendUrl }) => {
     <div className="admin-login" id="admin-login">
       <form className="admin-login-card" onSubmit={onSubmitHandler}>
         <div className="admin-login-logo">
-          <svg width="36" height="36" viewBox="0 0 28 28" fill="none">
-            <circle cx="14" cy="14" r="14" fill="#3563E9" />
-            <path d="M8 18L10 10H18L20 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="10" cy="18" r="2" fill="white" />
-            <circle cx="18" cy="18" r="2" fill="white" />
-          </svg>
+          <img src={logo} alt="CarRental Admin Logo" className="logo-image" style={{ height: "40px", borderRadius: "8px" }} />
           <h1>CarRental Admin</h1>
         </div>
         <p className="admin-login-subtitle">Sign in to manage your platform</p>
@@ -47,7 +43,7 @@ const Login = ({ setToken, backendUrl }) => {
           <input
             type="email"
             id="admin-email"
-            placeholder="admin@example.com"
+            placeholder="admin@carrental.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required

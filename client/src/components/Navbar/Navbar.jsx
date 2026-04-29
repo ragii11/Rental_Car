@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
+import { logo } from "../../assets/assets";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -24,26 +25,7 @@ const Navbar = () => {
   return (
     <nav className="navbar" id="navbar">
       <Link to="/" className="navbar-logo" id="navbar-logo">
-        <div className="logo-icon">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="14" cy="14" r="14" fill="#3563E9" />
-            <path
-              d="M8 18L10 10H18L20 18"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <circle cx="10" cy="18" r="2" fill="white" />
-            <circle cx="18" cy="18" r="2" fill="white" />
-          </svg>
-        </div>
-        <span className="logo-text">CarRental</span>
+        <img src={logo} alt="CarRental Logo" className="logo-image" style={{ height: "40px", borderRadius: "8px" }} />
       </Link>
 
       <div className={`navbar-links ${mobileMenu ? "active" : ""}`}>
@@ -86,7 +68,15 @@ const Navbar = () => {
 
         {token ? (
           <div className="user-menu">
-            <div className="user-avatar" onClick={handleLogout} title="Logout">
+            <div
+              className="user-avatar"
+              onClick={() => {
+                if (window.confirm("Are you sure you want to logout?")) {
+                  handleLogout();
+                }
+              }}
+              title="Logout"
+            >
               <svg
                 width="20"
                 height="20"

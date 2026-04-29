@@ -22,7 +22,7 @@ const CarList = ({ backendUrl, token }) => {
       const response = await axios.post(
         `${backendUrl}/api/car/remove`,
         { id },
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.success) {
         toast.success("Car removed");
@@ -41,7 +41,7 @@ const CarList = ({ backendUrl, token }) => {
       const response = await axios.post(
         `${backendUrl}/api/car/toggle`,
         { id },
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.success) {
         toast.success("Availability updated");
@@ -91,7 +91,7 @@ const CarList = ({ backendUrl, token }) => {
               </div>
               <span className="car-table-name">{car.name}</span>
               <span>{car.type}</span>
-              <span className="car-table-price">${car.price}/day</span>
+              <span className="car-table-price">₹{car.price}/day</span>
               <span>{car.location}</span>
               <span>
                 <button

@@ -1,7 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { AppContext } from "../../context/AppContext";
 import "./CarDetails.css";
+
+const currency = import.meta.env.VITE_CURRENCY || "₹";
 
 const CarDetails = () => {
   const { id } = useParams();
@@ -9,8 +12,19 @@ const CarDetails = () => {
     useContext(AppContext);
   const [pickupDate, setPickupDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const car = cars.find((c) => c._id === id);
+
+  // Auto-calculate days and total price
+  const { days, totalPrice } = useMemo(() => {
+    if (!pickupDate || !returnDate || !car) return { days: 0, totalPrice: 0 };
+    const p = new Date(pickupDate);
+    const r = new Date(returnDate);
+    if (isNaN(p.getTime()) || isNaN(r.getTime()) || r <= p) return { days: 0, totalPrice: 0 };
+    const d = Math.ceil((r - p) / (1000 * 60 * 60 * 24));
+    return { days: d, totalPrice: d * car.price };
+  }, [pickupDate, returnDate, car]);
 
   if (!car) {
     return (
@@ -32,7 +46,6 @@ const CarDetails = () => {
       return;
     }
     if (!pickupDate || !returnDate) {
-      const { toast } = await import("react-toastify");
       toast.error("Please select both pickup and return dates");
       return;
     }
@@ -40,16 +53,17 @@ const CarDetails = () => {
     const pickup = new Date(pickupDate);
     const returnD = new Date(returnDate);
     if (returnD <= pickup) {
-      const { toast } = await import("react-toastify");
       toast.error("Return date must be after pickup date");
       return;
     }
 
+    setIsProcessing(true);
     const success = await createBooking(car._id, pickupDate, returnDate);
     if (success) {
       setPickupDate("");
       setReturnDate("");
     }
+    setIsProcessing(false);
   };
 
   return (
@@ -65,7 +79,7 @@ const CarDetails = () => {
 
         <div className="car-booking-card" id="booking-card">
           <div className="booking-price">
-            <span className="booking-price-amount">${car.price}</span>
+            <span className="booking-price-amount">{currency}{car.price}</span>
             <span className="booking-price-label">per day</span>
           </div>
           <div className="booking-divider"></div>
@@ -77,6 +91,7 @@ const CarDetails = () => {
                 type="date"
                 id="pickup-date-detail"
                 value={pickupDate}
+                min={new Date().toISOString().split("T")[0]}
                 onChange={(e) => setPickupDate(e.target.value)}
               />
             </div>
@@ -87,16 +102,42 @@ const CarDetails = () => {
                 type="date"
                 id="return-date-detail"
                 value={returnDate}
+                min={pickupDate || new Date().toISOString().split("T")[0]}
                 onChange={(e) => setReturnDate(e.target.value)}
               />
             </div>
 
-            <button type="submit" className="book-now-btn" id="book-now-btn">
-              Book Now
+            {days > 0 && (
+              <div className="booking-summary">
+                <div className="booking-summary-row">
+                  <span>{currency}{car.price} × {days} day{days > 1 ? "s" : ""}</span>
+                  <span>{currency}{totalPrice}</span>
+                </div>
+                <div className="booking-summary-divider"></div>
+                <div className="booking-summary-row booking-summary-total">
+                  <span>Total</span>
+                  <span>{currency}{totalPrice}</span>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="book-now-btn"
+              id="book-now-btn"
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Processing..." : days > 0 ? `Pay ${currency}${totalPrice}` : "Book Now"}
             </button>
           </form>
 
-          <p className="booking-note">No credit card required to reserve</p>
+          <p className="booking-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+              <line x1="1" y1="10" x2="23" y2="10"/>
+            </svg>
+            Secure payment via Razorpay
+          </p>
         </div>
       </div>
 

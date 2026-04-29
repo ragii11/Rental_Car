@@ -14,7 +14,9 @@ const Dashboard = ({ backendUrl, token }) => {
   const fetchDashboardData = async () => {
     try {
       const carsRes = await axios.get(`${backendUrl}/api/car/list`);
-      const bookingsRes = await axios.get(`${backendUrl}/api/booking/all`);
+      const bookingsRes = await axios.get(`${backendUrl}/api/booking/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (carsRes.data.success && bookingsRes.data.success) {
         const cars = carsRes.data.cars;
@@ -93,7 +95,7 @@ const Dashboard = ({ backendUrl, token }) => {
             </svg>
           </div>
           <div className="stat-card-info">
-            <span className="stat-card-value">${stats.totalRevenue.toLocaleString()}</span>
+            <span className="stat-card-value">₹{stats.totalRevenue.toLocaleString()}</span>
             <span className="stat-card-label">Total Revenue</span>
           </div>
         </div>
@@ -128,7 +130,7 @@ const Dashboard = ({ backendUrl, token }) => {
                 <span>{booking.carId?.name || "N/A"}</span>
                 <span>{booking.userId?.name || booking.userId?.email || "N/A"}</span>
                 <span>{booking.days}</span>
-                <span>${booking.totalPrice}</span>
+                <span>₹{booking.totalPrice}</span>
                 <span className={`status-badge ${booking.status.toLowerCase()}`}>
                   {booking.status}
                 </span>

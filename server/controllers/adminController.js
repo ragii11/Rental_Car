@@ -23,7 +23,7 @@ const adminLogin = async (req, res) => {
     }
 
     // Find admin
-    const admin = await Admin.findOne({ email });
+    const admin = await Admin.findOne({ email: email.toLowerCase() });
     if (!admin) {
       return res
         .status(401)
@@ -174,16 +174,21 @@ const seedAdmin = async () => {
   try {
     const existingAdmin = await Admin.findOne({});
     if (!existingAdmin) {
+      const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || "admin123";
+      if (!process.env.ADMIN_DEFAULT_PASSWORD) {
+        console.warn("⚠️  ADMIN_DEFAULT_PASSWORD not set in .env — using insecure fallback!");
+      }
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash("admin123", salt);
+      const hashedPassword = await bcrypt.hash(defaultPassword, salt);
 
+      const defaultEmail = process.env.ADMIN_DEFAULT_EMAIL || "admin@carrental.com";
       const admin = new Admin({
-        email: "admin@carrental.com",
+        email: defaultEmail,
         password: hashedPassword,
       });
       await admin.save();
       console.log(
-        "Default admin created — email: admin@carrental.com / password: admin123"
+        `Default admin created — email: ${defaultEmail}`
       );
       console.log("⚠️  Change the default admin password immediately!");
     }

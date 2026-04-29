@@ -7,8 +7,9 @@ import car6 from "./car6.png";
 import car7 from "./car7.png";
 import car8 from "./car8.png";
 import heroBg from "./hero_bg.png";
+import logo from "./logo.jpg";
 
-export { heroBg };
+export { heroBg, logo };
 
 export const carList = [
   {

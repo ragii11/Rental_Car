@@ -1,17 +1,12 @@
 import { NavLink } from "react-router-dom";
+import logo from "../../assets/logo.jpg";
 import "./Sidebar.css";
 
 const Sidebar = () => {
   return (
     <aside className="admin-sidebar" id="admin-sidebar">
       <div className="sidebar-logo">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <circle cx="14" cy="14" r="14" fill="#3563E9" />
-          <path d="M8 18L10 10H18L20 18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="10" cy="18" r="2" fill="white" />
-          <circle cx="18" cy="18" r="2" fill="white" />
-        </svg>
-        <span>CarRental</span>
+        <img src={logo} alt="CarRental Logo" className="logo-image" style={{ height: "40px", borderRadius: "8px" }} />
       </div>
 
       <nav className="sidebar-nav">

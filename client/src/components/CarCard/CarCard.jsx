@@ -14,7 +14,7 @@ const CarCard = ({ car }) => {
         {car.available && <span className="badge available">Available Now</span>}
         <img src={car.image} alt={car.name} />
         <div className="car-price-tag">
-          <span className="price">${car.price}</span>
+          <span className="price">₹{car.price}</span>
           <span className="per-day">/ day</span>
         </div>
       </div>

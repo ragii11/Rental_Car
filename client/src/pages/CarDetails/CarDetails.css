@@ -132,11 +132,53 @@
 }
 
 .booking-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   text-align: center;
   font-size: 13px;
   color: var(--text-light);
   margin-top: 16px;
 }
+
+.booking-note svg {
+  flex-shrink: 0;
+}
+
+/* Booking Summary (price calculator) */
+.booking-summary {
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.booking-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.booking-summary-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 10px 0;
+}
+
+.booking-summary-total {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-dark);
+}
+
+.book-now-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
 
 .car-info-section {
   margin-bottom: 60px;

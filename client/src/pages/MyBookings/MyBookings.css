@@ -132,6 +132,39 @@
   color: var(--danger);
 }
 
+.booking-status.pending {
+  background: rgba(243, 156, 18, 0.1);
+  color: #f39c12;
+}
+
+.booking-status.completed {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.booking-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.payment-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.payment-badge.paid {
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--success);
+}
+
+.payment-badge.unpaid {
+  background: rgba(243, 156, 18, 0.1);
+  color: #f39c12;
+}
+
 .booking-car-type {
   font-size: 14px;
   color: var(--text-secondary);

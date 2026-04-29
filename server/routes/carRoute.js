@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
+import adminAuth from "../middleware/adminAuth.js";
 import authMiddleware from "../middleware/auth.js";
-import adminMiddleware from "../middleware/admin.js";
 import {
   addCar,
   listCars,
@@ -22,11 +22,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-carRouter.post("/add", authMiddleware, adminMiddleware, upload.single("image"), addCar);
+// Admin route to add car
+carRouter.post("/add", adminAuth, upload.single("image"), addCar);
+// User route to list/add their car (from the client "List Cars" page)
+carRouter.post("/user-add", authMiddleware, upload.single("image"), addCar);
 carRouter.get("/list", listCars);
 carRouter.get("/:id", getCarById);
-carRouter.post("/remove", authMiddleware, adminMiddleware, removeCar);
-carRouter.post("/toggle", authMiddleware, adminMiddleware, toggleAvailability);
+carRouter.post("/remove", adminAuth, removeCar);
+carRouter.post("/toggle", adminAuth, toggleAvailability);
 
 export default carRouter;
-

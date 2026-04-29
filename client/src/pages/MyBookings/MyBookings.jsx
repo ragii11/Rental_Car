@@ -66,68 +66,80 @@ const MyBookings = () => {
         </div>
       ) : (
         <div className="bookings-list">
-          {bookings.map((booking) => (
-            <div
-              className="booking-card"
-              key={booking._id}
-              id={`booking-${booking._id}`}
-            >
-              <div className="booking-car-image">
-                <img src={booking.car?.image} alt={booking.car?.name} />
-              </div>
-              <div className="booking-info">
-                <div className="booking-info-top">
-                  <h3>{booking.car?.name}</h3>
-                  <span
-                    className={`booking-status ${booking.status.toLowerCase()}`}
-                  >
-                    {booking.status}
-                  </span>
+          {bookings.map((booking) => {
+            // Backend populates "carId" — that holds the car object
+            const car = booking.carId || {};
+
+            return (
+              <div
+                className="booking-card"
+                key={booking._id}
+                id={`booking-${booking._id}`}
+              >
+                <div className="booking-car-image">
+                  <img src={car.image} alt={car.name} />
                 </div>
-                <p className="booking-car-type">
-                  {booking.car?.type} • {booking.car?.year}
-                </p>
-                <div className="booking-dates">
-                  <div className="booking-date">
-                    <span className="date-label">Pickup</span>
-                    <span className="date-value">
-                      {new Date(booking.pickupDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
+                <div className="booking-info">
+                  <div className="booking-info-top">
+                    <h3>{car.name || "Unknown Car"}</h3>
+                    <div className="booking-badges">
+                      <span
+                        className={`booking-status ${booking.status.toLowerCase()}`}
+                      >
+                        {booking.status}
+                      </span>
+                      <span
+                        className={`payment-badge ${booking.payment ? "paid" : "unpaid"}`}
+                      >
+                        {booking.payment ? "Paid" : "Unpaid"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="date-arrow">→</div>
-                  <div className="booking-date">
-                    <span className="date-label">Return</span>
-                    <span className="date-value">
-                      {new Date(booking.returnDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
+                  <p className="booking-car-type">
+                    {car.type || "—"} • {car.year || "—"}
+                  </p>
+                  <div className="booking-dates">
+                    <div className="booking-date">
+                      <span className="date-label">Pickup</span>
+                      <span className="date-value">
+                        {new Date(booking.pickupDate).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                    <div className="date-arrow">→</div>
+                    <div className="booking-date">
+                      <span className="date-label">Return</span>
+                      <span className="date-value">
+                        {new Date(booking.returnDate).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="booking-pricing">
-                <div className="booking-total">
-                  <span className="total-label">Total</span>
-                  <span className="total-amount">${booking.totalPrice}</span>
+                <div className="booking-pricing">
+                  <div className="booking-total">
+                    <span className="total-label">Total</span>
+                    <span className="total-amount">₹{booking.totalPrice}</span>
+                  </div>
+                  <p className="booking-days">{booking.days} days</p>
+                  {(booking.status === "Confirmed" || booking.status === "Pending") && (
+                    <button
+                      className="cancel-booking-btn"
+                      onClick={() => cancelBooking(booking._id)}
+                    >
+                      Cancel
+                    </button>
+                  )}
                 </div>
-                <p className="booking-days">{booking.days} days</p>
-                {booking.status === "Confirmed" && (
-                  <button
-                    className="cancel-booking-btn"
-                    onClick={() => cancelBooking(booking._id)}
-                  >
-                    Cancel
-                  </button>
-                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

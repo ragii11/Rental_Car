@@ -45,9 +45,9 @@ const ListCars = () => {
       });
       submitData.append("image", image);
 
-      // We hit the backend /api/car/add to list a new car. 
-      const response = await axios.post(`${backendUrl}/api/car/add`, submitData, {
-        headers: { token },
+      // We hit the backend /api/car/user-add to list a new car as a user.
+      const response = await axios.post(`${backendUrl}/api/car/user-add`, submitData, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.data.success) {
@@ -97,7 +97,7 @@ const ListCars = () => {
               <input type="text" name="location" value={formData.location} onChange={onChangeHandler} placeholder="e.g. New York" required />
             </div>
             <div className="form-group">
-              <label>Price per Day ($)</label>
+              <label>Price per Day (₹)</label>
               <input type="number" name="price" value={formData.price} onChange={onChangeHandler} placeholder="e.g. 50" required min="1" />
             </div>
             <div className="form-group">

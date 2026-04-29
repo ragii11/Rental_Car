@@ -29,7 +29,7 @@
 .bookings-table-header,
 .bookings-table-row {
   display: grid;
-  grid-template-columns: 1.8fr 1.5fr 1fr 1fr 0.6fr 0.8fr 1.1fr 1fr;
+  grid-template-columns: 1.6fr 1.3fr 0.9fr 0.9fr 0.5fr 0.8fr 0.8fr 0.9fr 0.9fr;
   gap: 10px;
   padding: 14px 20px;
   align-items: center;
@@ -89,6 +89,29 @@
 .admin-status-badge.completed {
   background: rgba(53, 99, 233, 0.1);
   color: var(--primary);
+}
+
+.admin-status-badge.pending {
+  background: rgba(243, 156, 18, 0.1);
+  color: #f39c12;
+}
+
+.admin-payment-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin-payment-badge.paid {
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--success);
+}
+
+.admin-payment-badge.unpaid {
+  background: rgba(243, 156, 18, 0.1);
+  color: #f39c12;
 }
 
 .booking-actions {
@@ -160,7 +183,7 @@
 
   .bookings-table-header,
   .bookings-table-row {
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
   }
 
   .bookings-table-header span:nth-child(3),

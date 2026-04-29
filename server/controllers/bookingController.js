@@ -1,7 +1,18 @@
 import Booking from "../models/bookingModel.js";
 import Car from "../models/carModel.js";
+import PaymentHistory from "../models/paymentHistoryModel.js";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
-// Create a new booking
+// Initialize Razorpay instance
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+const currency = process.env.CURRENCY || "inr";
+
+// Create a new booking + Razorpay order (payment pending)
 const createBooking = async (req, res) => {
   try {
     const { carId, pickupDate, returnDate } = req.body;
@@ -42,6 +53,7 @@ const createBooking = async (req, res) => {
     const days = Math.ceil((returnD - pickup) / (1000 * 60 * 60 * 24));
     const totalPrice = days * car.price;
 
+    // Save booking with status "Pending"
     const newBooking = new Booking({
       userId,
       carId,
@@ -49,19 +61,88 @@ const createBooking = async (req, res) => {
       returnDate: returnD,
       days,
       totalPrice,
-      status: "Confirmed",
+      status: "Pending",
+      payment: false,
     });
 
     await newBooking.save();
 
+    // Create Razorpay order (amount in paise — smallest currency unit)
+    const razorpayOrder = await razorpayInstance.orders.create({
+      amount: totalPrice * 100,
+      currency: currency.toUpperCase(),
+      receipt: newBooking._id.toString(),
+    });
+
+    // Store Razorpay order ID on the booking
+    newBooking.razorpayOrderId = razorpayOrder.id;
+    await newBooking.save();
+
     res.status(201).json({
       success: true,
-      message: `Booking confirmed! Total: $${totalPrice} for ${days} days`,
+      message: "Booking created. Complete payment to confirm.",
       booking: newBooking,
+      order: razorpayOrder,
     });
   } catch (error) {
-    console.error(error);
+    console.error("createBooking error:", error);
     res.status(500).json({ success: false, message: "Error creating booking" });
+  }
+};
+
+// Verify Razorpay payment after checkout
+const verifyPayment = async (req, res) => {
+  try {
+    const { bookingId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    if (!bookingId || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing payment verification data",
+      });
+    }
+
+    // Verify signature using HMAC SHA256
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed — invalid signature",
+      });
+    }
+
+    // Mark booking as paid and confirmed
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+    booking.payment = true;
+    booking.paymentId = razorpay_payment_id;
+    booking.status = "Confirmed";
+    await booking.save();
+
+    // Log the payment history
+    await PaymentHistory.create({
+      bookingId: booking._id,
+      userId: booking.userId,
+      amount: booking.totalPrice,
+      razorpayPaymentId: razorpay_payment_id,
+      razorpayOrderId: razorpay_order_id,
+      status: "Success",
+    });
+
+    res.json({
+      success: true,
+      message: "Payment verified! Booking confirmed.",
+    });
+  } catch (error) {
+    console.error("verifyPayment error:", error);
+    res.status(500).json({ success: false, message: "Error verifying payment" });
   }
 };
 
@@ -145,7 +226,7 @@ const updateBookingStatus = async (req, res) => {
       });
     }
 
-    const validStatuses = ["Confirmed", "Cancelled", "Completed"];
+    const validStatuses = ["Pending", "Confirmed", "Cancelled", "Completed"];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -170,6 +251,7 @@ const updateBookingStatus = async (req, res) => {
 
 export {
   createBooking,
+  verifyPayment,
   getUserBookings,
   getAllBookings,
   cancelBooking,

@@ -28,7 +28,7 @@ const addCar = async (req, res) => {
 
     let imageUrl = "";
 
-    // Upload image to ImageKit if provided
+    // Upload image to ImageKit if provided, fallback to local path
     if (req.file) {
       try {
         const fileBuffer = fs.readFileSync(req.file.path);
@@ -39,14 +39,12 @@ const addCar = async (req, res) => {
         });
         imageUrl = uploadResponse.url;
 
-        // Remove temp file
+        // Remove temp file after successful upload
         fs.unlinkSync(req.file.path);
       } catch (imageError) {
-        console.error("Image upload error:", imageError);
-        return res.status(500).json({
-          success: false,
-          message: "Error uploading image",
-        });
+        console.error("ImageKit upload failed, using local path:", imageError.message);
+        // Fallback: serve from the local uploads directory
+        imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
       }
     }
 

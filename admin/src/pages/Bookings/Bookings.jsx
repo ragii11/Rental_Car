@@ -8,7 +8,9 @@ const Bookings = ({ backendUrl, token }) => {
 
   const fetchBookings = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/booking/all`);
+      const response = await axios.get(`${backendUrl}/api/booking/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (response.data.success) {
         setBookings(response.data.bookings);
       }
@@ -22,7 +24,7 @@ const Bookings = ({ backendUrl, token }) => {
       const response = await axios.post(
         `${backendUrl}/api/booking/status`,
         { bookingId, status },
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.success) {
         toast.success(`Booking ${status.toLowerCase()}`);
@@ -54,6 +56,7 @@ const Bookings = ({ backendUrl, token }) => {
             <span>Return</span>
             <span>Days</span>
             <span>Total</span>
+            <span>Payment</span>
             <span>Status</span>
             <span>Actions</span>
           </div>
@@ -74,14 +77,19 @@ const Bookings = ({ backendUrl, token }) => {
                 })}
               </span>
               <span>{booking.days}</span>
-              <span className="booking-total-price">${booking.totalPrice}</span>
+              <span className="booking-total-price">₹{booking.totalPrice}</span>
+              <span>
+                <span className={`admin-payment-badge ${booking.payment ? "paid" : "unpaid"}`}>
+                  {booking.payment ? "Paid" : "Unpaid"}
+                </span>
+              </span>
               <span>
                 <span className={`admin-status-badge ${booking.status.toLowerCase()}`}>
                   {booking.status}
                 </span>
               </span>
               <span className="booking-actions">
-                {booking.status === "Confirmed" && (
+                {(booking.status === "Confirmed" || booking.status === "Pending") && (
                   <>
                     <button
                       className="action-btn complete"

@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../context/AppContext";
 import { heroBg } from "../../assets/assets";
 import "./Hero.css";
 
 const Hero = () => {
   const [pickupLocation, setPickupLocation] = useState("");
   const [pickupDate, setPickupDate] = useState("");
+  const { setSearchQuery } = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleExplore = (e) => {
     e.preventDefault();
+    // Pass the selected location to the Cars page via search context
+    if (pickupLocation) {
+      setSearchQuery(pickupLocation);
+    }
     navigate("/cars");
   };
 

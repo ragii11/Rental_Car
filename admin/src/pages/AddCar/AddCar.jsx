@@ -66,7 +66,7 @@ const AddCar = ({ backendUrl, token }) => {
       }
 
       const response = await axios.post(`${backendUrl}/api/car/add`, data, {
-        headers: { token },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.data.success) {
@@ -196,7 +196,7 @@ const AddCar = ({ backendUrl, token }) => {
             />
           </div>
           <div className="form-field">
-            <label htmlFor="add-car-price">Price per day ($) *</label>
+            <label htmlFor="add-car-price">Price per day (₹) *</label>
             <input
               type="number"
               id="add-car-price"

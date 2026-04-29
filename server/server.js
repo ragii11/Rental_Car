@@ -17,9 +17,12 @@ app.use(express.json());
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["http://localhost:5173", "http://localhost:5174"],
+    : ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
   credentials: true,
 }));
+
+// Serve uploaded images as static files
+app.use("/uploads", express.static("uploads"));
 
 // DB connection
 connectDB().then(() => {
