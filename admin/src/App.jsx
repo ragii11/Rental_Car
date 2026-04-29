@@ -11,7 +11,7 @@ import CarList from "./pages/CarList/CarList";
 import Bookings from "./pages/Bookings/Bookings";
 import "./App.css";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://rental-car-server-qz0g.onrender.com";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("adminToken") || "");
